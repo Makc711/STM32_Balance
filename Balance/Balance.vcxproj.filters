@@ -9,10 +9,6 @@
       <UniqueIdentifier>{1ec2439e-7b99-47a2-860f-830092bec08a}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource files">
-      <UniqueIdentifier>{7e46fa4c-ccf0-4679-9699-544035641bf2}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
-    </Filter>
     <Filter Include="Source files\Startup">
       <UniqueIdentifier>{28e1e895-bd26-4395-bbc5-093b8ca5ba1f}</UniqueIdentifier>
     </Filter>
@@ -123,15 +119,6 @@
     <ClCompile Include="..\Src\usart.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\stm32f1xx_it.c">
-      <Filter>Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\stm32f1xx_hal_msp.c">
-      <Filter>Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\main.c">
-      <Filter>Source files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Drivers\CMSIS\Device\ST\STM32F1xx\Source\Templates\system_stm32f1xx.c">
       <Filter>Source files\Startup</Filter>
     </ClCompile>
@@ -202,12 +189,6 @@
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\Inc\usart.h">
-      <Filter>Header files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Inc\stm32f1xx_it.h">
-      <Filter>Header files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Inc\stm32f1xx_hal_conf.h">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\Inc\main.h">
@@ -291,5 +272,22 @@
     <None Include="stm32.xml">
       <Filter>VisualGDB settings</Filter>
     </None>
+    <ClCompile Include="..\Src\main.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\stm32f1xx_hal_msp.c">
+      <Filter>Source files\Device-specific files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\stm32f1xx_it.c">
+      <Filter>Source files\Device-specific files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Inc\stm32f1xx_hal_conf.h">
+      <Filter>Header files\Device-specific files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Inc\stm32f1xx_it.h">
+      <Filter>Header files\Device-specific files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
