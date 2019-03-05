@@ -12,6 +12,18 @@
     <Filter Include="Source files\Startup">
       <UniqueIdentifier>{28e1e895-bd26-4395-bbc5-093b8ca5ba1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source files\Device-specific files">
+      <UniqueIdentifier>{f4f9d2ff-645e-465f-9d3b-e9fadba0dd6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\Startup">
+      <UniqueIdentifier>{492c3bcb-a277-4096-a8f6-a1c9a8b7217d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\Device-specific files">
+      <UniqueIdentifier>{582bf012-a872-423d-a125-bafc8bcf899d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VisualGDB settings">
+      <UniqueIdentifier>{d0075d5b-6634-46dc-889f-13c41b19491f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source files\STM32Cube HAL">
       <UniqueIdentifier>{48b41bdc-af16-4416-8be3-55722d8a78c7}</UniqueIdentifier>
     </Filter>
@@ -50,12 +62,6 @@
     </Filter>
     <Filter Include="Source files\STM32Cube HAL\I2C">
       <UniqueIdentifier>{8bb8a708-3160-48b4-b538-0ada442fa08f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\Device-specific files">
-      <UniqueIdentifier>{f4f9d2ff-645e-465f-9d3b-e9fadba0dd6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header files\Startup">
-      <UniqueIdentifier>{492c3bcb-a277-4096-a8f6-a1c9a8b7217d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header files\STM32Cube HAL">
       <UniqueIdentifier>{127efbc3-6572-4106-a936-8ab8cea52cc0}</UniqueIdentifier>
@@ -96,12 +102,6 @@
     <Filter Include="Header files\STM32Cube HAL\I2C">
       <UniqueIdentifier>{f0f7efe7-6015-49ea-bab5-fcc809bb0a12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header files\Device-specific files">
-      <UniqueIdentifier>{582bf012-a872-423d-a125-bafc8bcf899d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="VisualGDB settings">
-      <UniqueIdentifier>{d0075d5b-6634-46dc-889f-13c41b19491f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\gpio.c">
@@ -114,9 +114,6 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="..\Src\i2c.c">
-      <Filter>Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\usart.c">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="..\Drivers\CMSIS\Device\ST\STM32F1xx\Source\Templates\system_stm32f1xx.c">
@@ -186,9 +183,6 @@
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\Inc\i2c.h">
-      <Filter>Header files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Inc\usart.h">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\Inc\main.h">
@@ -272,22 +266,34 @@
     <None Include="stm32.xml">
       <Filter>VisualGDB settings</Filter>
     </None>
-    <ClCompile Include="..\Src\main.cpp">
+    <ClCompile Include="..\Src\main.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\stm32f1xx_hal_msp.c">
-      <Filter>Source files\Device-specific files</Filter>
+    <ClCompile Include="..\Src\dma.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\Inc\dma.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\Src\usart.c">
+      <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="..\Src\stm32f1xx_it.c">
-      <Filter>Source files\Device-specific files</Filter>
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\memoryMA.c">
+      <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Inc\stm32f1xx_hal_conf.h">
-      <Filter>Header files\Device-specific files</Filter>
+    <ClInclude Include="..\Inc\usart.h">
+      <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\Inc\stm32f1xx_it.h">
-      <Filter>Header files\Device-specific files</Filter>
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Inc\memoryMA.h">
+      <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

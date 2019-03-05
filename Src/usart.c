@@ -41,10 +41,51 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include <string.h>
+#include "memoryMA.h"
+
+/******************************************************************************
+ * Объявления локальных определений
+ ******************************************************************************/
+#define TX_BUFFER_SIZE   128
+#define RX_BUFFER_SIZE   8
+#define Index_Of_Command_byte 0
+#define PACKAGE_SIZE     8 // Размер посылки, байт
+#define COMMAND_SIZE     1
+#define MIN_PACKAGE_SIZE COMMAND_SIZE
+#define MAX_PACKAGE_SIZE PACKAGE_SIZE
+
+#define UART_Command_State_Pos                (7U)                               
+#define UART_Command_State_Msk                (0x1U << UART_Command_State_Pos)           /*!< 0x80 */
+#define UART_Command_State_Data               UART_Command_State_Msk                     /*!< Command_State Data */
+
+/******************************************************************************
+ * Объявления локальных переменных
+ ******************************************************************************/
+bool isUART_TxReady = true;
+uint8_t transmitBuffer[TX_BUFFER_SIZE];
+uint8_t unsentBytes = 0;
+uint8_t beginningOfDataPackage = 0;
+//------------------------------------------
+bool isWaitingIncomingPackageSize = true;
+uint8_t incomingPackageSize = 0;
+uint8_t receiveBuffer[RX_BUFFER_SIZE];
+
+/******************************************************************************
+ * Объявления локальных прототипов функций
+ ******************************************************************************/
+void UART_Transmit(uint8_t *pData, const uint16_t size);
+void UART_Receive(uint8_t *pData, const uint16_t size);
+void UART_TransmitCommand(const UART_Command command);
+void UART_TransmitNextPackage();
+bool UART_SaveReceivedData();
+bool executeTheCommand(const UART_Command command);
 
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_usart1_tx;
+DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USART1 init function */
 
@@ -52,7 +93,7 @@ void MX_USART1_UART_Init(void)
 {
 
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = USART_BAUD_RATE;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -83,15 +124,48 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     PA9     ------> USART1_TX
     PA10     ------> USART1_RX 
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_9;
+    GPIO_InitStruct.Pin = USART_TX_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    HAL_GPIO_Init(USART_TX_GPIO_Port, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_10;
+    GPIO_InitStruct.Pin = USART_RX_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(USART_RX_GPIO_Port, &GPIO_InitStruct);
+
+    /* USART1 DMA Init */
+    /* USART1_TX Init */
+    hdma_usart1_tx.Instance = DMA1_Channel4;
+    hdma_usart1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    hdma_usart1_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_usart1_tx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_usart1_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_usart1_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_usart1_tx.Init.Mode = DMA_NORMAL;
+    hdma_usart1_tx.Init.Priority = DMA_PRIORITY_LOW;
+    if (HAL_DMA_Init(&hdma_usart1_tx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart1_tx);
+
+    /* USART1_RX Init */
+    hdma_usart1_rx.Instance = DMA1_Channel5;
+    hdma_usart1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_usart1_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_usart1_rx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_usart1_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_usart1_rx.Init.Mode = DMA_NORMAL;
+    hdma_usart1_rx.Init.Priority = DMA_PRIORITY_LOW;
+    if (HAL_DMA_Init(&hdma_usart1_rx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart1_rx);
 
     /* USART1 interrupt Init */
     HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
@@ -117,7 +191,11 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     PA9     ------> USART1_TX
     PA10     ------> USART1_RX 
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
+    HAL_GPIO_DeInit(GPIOA, USART_TX_Pin|USART_RX_Pin);
+
+    /* USART1 DMA DeInit */
+    HAL_DMA_DeInit(uartHandle->hdmatx);
+    HAL_DMA_DeInit(uartHandle->hdmarx);
 
     /* USART1 interrupt Deinit */
     HAL_NVIC_DisableIRQ(USART1_IRQn);
@@ -128,7 +206,165 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
+void UART_Transmit(uint8_t *pData, const uint16_t size)
+{
+	if (HAL_UART_Transmit_DMA(&huart1, pData, size) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
 
+void UART_Receive(uint8_t *pData, const uint16_t size)
+{
+	if (HAL_UART_Receive_DMA(&huart1, pData, size) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
+
+void UART_TransmitCommand(const UART_Command command)
+{
+	UART_TransmitData((uint8_t*)&command, sizeof(uint8_t));
+}
+
+// Обработчик прерывания после окончания отправки сообщения
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if (huart == &huart1)
+	{
+		if (unsentBytes == 0)
+		{
+			isUART_TxReady = true;
+		} else
+		{
+			UART_TransmitNextPackage();
+		}
+	}
+}
+
+// Обработчик прерывания после окончания принятия всех заявленных байт
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if (huart == &huart1)
+	{
+		if (isWaitingIncomingPackageSize == true)
+		{
+			if (incomingPackageSize >= MIN_PACKAGE_SIZE && incomingPackageSize <= MAX_PACKAGE_SIZE)
+			{
+				isWaitingIncomingPackageSize = false;
+				UART_Receive(receiveBuffer, incomingPackageSize);
+				UART_TransmitCommand(UART_COMMAND_MA_OK);
+			} else
+			{
+				UART_ReceiveIncomingPackageSize();
+				UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+			}
+		} else
+		{
+			if ((receiveBuffer[Index_Of_Command_byte] & UART_Command_State_Msk) == UART_Command_State_Data)
+			{
+				if (UART_SaveReceivedData() == true)
+				{
+					UART_ReceiveIncomingPackageSize();
+					UART_TransmitCommand(UART_COMMAND_MA_OK);
+				} else
+				{
+					UART_ReceiveIncomingPackageSize();
+					UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+				}
+			} else
+			{
+				if (incomingPackageSize - COMMAND_SIZE > 0)
+				{
+					UART_ReceiveIncomingPackageSize();
+					UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+				} else
+				{
+					if (executeTheCommand(receiveBuffer[Index_Of_Command_byte]) == true)
+					{
+						UART_ReceiveIncomingPackageSize();
+						UART_TransmitCommand(UART_COMMAND_MA_OK);
+					} else
+					{
+						UART_ReceiveIncomingPackageSize();
+						UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+					}
+				}
+			}
+		}
+	}
+}
+
+bool UART_TransmitData(uint8_t *data, const uint8_t size)
+{
+	if (isUART_TxReady == false)
+	{
+		return false;
+	}
+	isUART_TxReady = false;
+	memcpy(transmitBuffer, data, size);
+	unsentBytes = size;
+	beginningOfDataPackage = 0;
+	UART_TransmitNextPackage();
+	return true;
+}
+
+void UART_TransmitNextPackage()
+{
+	if (unsentBytes <= PACKAGE_SIZE)
+	{
+		const uint8_t numberOfLastBytes = unsentBytes;
+		unsentBytes = 0;
+		UART_Transmit(transmitBuffer + beginningOfDataPackage, numberOfLastBytes);
+		beginningOfDataPackage = 0;
+	} else
+	{
+		unsentBytes -= PACKAGE_SIZE;
+		UART_Transmit(transmitBuffer + beginningOfDataPackage, PACKAGE_SIZE);
+		beginningOfDataPackage += PACKAGE_SIZE;
+	}
+}
+
+void UART_ReceiveIncomingPackageSize()
+{
+	isWaitingIncomingPackageSize = true;
+	UART_Receive(&incomingPackageSize, sizeof(incomingPackageSize));
+}
+
+bool UART_SaveReceivedData()
+{
+	const uint8_t addressOfSavingData = receiveBuffer[Index_Of_Command_byte] & ~UART_Command_State_Data;
+	return writeDataToSettingsArray(receiveBuffer + COMMAND_SIZE, incomingPackageSize - COMMAND_SIZE, addressOfSavingData);
+}
+
+bool executeTheCommand(const UART_Command command)
+{
+	bool isCommandCompleted = true;
+	switch (command)
+	{
+	case UART_COMMAND_MK_BALANCING_IN_ENABLE:
+		setBalanceState(BalancingIn_ENABLE);
+		break;
+	case UART_COMMAND_MK_BALANCING_OUT_ENABLE:
+		setBalanceState(BalancingOut_ENABLE);
+		break;
+	case UART_COMMAND_MK_BALANCING_DISABLE:
+		setBalanceState(Balancing_DISABLE);
+		break;
+	case UART_COMMAND_MK_SEND_MEASUREMENTS:
+		setAction(SendMeasurements);
+		break;
+	case UART_COMMAND_MK_SEND_SETTINGS_CHECKSUM:
+		setAction(SendSettingsChecksum);
+		break;
+	case UART_COMMAND_MK_UPDATE_SETTINGS:
+		setAction(UpdateSettings);
+		break;
+	default:
+		isCommandCompleted = false;
+	}
+	return isCommandCompleted;
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -53,13 +53,19 @@
 extern CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN Private defines */
-
+/******************************************************************************
+ * Определение команд протокола
+ ******************************************************************************/
+#define CAN_CMD_Test_Send			0x222		// Команда отправки тестового сообщения (7FF-max)
+#define CAN_CMD_Test_Ok				0x002		// Команда подтверждения тестового сообщения
 /* USER CODE END Private defines */
 
 void MX_CAN_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void CAN_ConfigureFilter();
+void CAN_Send_Test();
+void CAN_Send_Ok();
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

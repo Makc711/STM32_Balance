@@ -74,40 +74,64 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+#ifndef __cplusplus
+typedef enum 
+{
+	false = 0, 
+	true  = !false
+} bool;
+#endif
 
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define GPO_LedTest_Pin GPIO_PIN_13
-#define GPO_LedTest_GPIO_Port GPIOC
+#define USART_BAUD_RATE 115200
+#define LedTest_Pin GPIO_PIN_13
+#define LedTest_GPIO_Port GPIOC
+#define OSC_IN_Pin GPIO_PIN_0
+#define OSC_IN_GPIO_Port GPIOD
+#define OSC_OUT_Pin GPIO_PIN_1
+#define OSC_OUT_GPIO_Port GPIOD
 #define ADC_Current_Pin GPIO_PIN_0
 #define ADC_Current_GPIO_Port GPIOA
-#define GPO_Gate1_Pin GPIO_PIN_1
-#define GPO_Gate1_GPIO_Port GPIOA
-#define GPO_Gate2_Pin GPIO_PIN_2
-#define GPO_Gate2_GPIO_Port GPIOA
-#define GPO_CSout_Pin GPIO_PIN_3
-#define GPO_CSout_GPIO_Port GPIOA
-#define GPI_CSin_Pin GPIO_PIN_4
-#define GPI_CSin_GPIO_Port GPIOA
-#define GPI_BuffEn_Pin GPIO_PIN_5
-#define GPI_BuffEn_GPIO_Port GPIOA
-#define GPO_TrInOut_Pin GPIO_PIN_6
-#define GPO_TrInOut_GPIO_Port GPIOA
+#define Gate1_Pin GPIO_PIN_1
+#define Gate1_GPIO_Port GPIOA
+#define Gate2_Pin GPIO_PIN_2
+#define Gate2_GPIO_Port GPIOA
+#define CSout_Pin GPIO_PIN_3
+#define CSout_GPIO_Port GPIOA
+#define CSin_Pin GPIO_PIN_4
+#define CSin_GPIO_Port GPIOA
+#define BuffEn_Pin GPIO_PIN_5
+#define BuffEn_GPIO_Port GPIOA
+#define TrInOut_Pin GPIO_PIN_6
+#define TrInOut_GPIO_Port GPIOA
 #define ADC_Uacc_Pin GPIO_PIN_7
 #define ADC_Uacc_GPIO_Port GPIOA
+#define I2C_SCL_Pin GPIO_PIN_10
+#define I2C_SCL_GPIO_Port GPIOB
+#define I2C_SDA_Pin GPIO_PIN_11
+#define I2C_SDA_GPIO_Port GPIOB
+#define USART_TX_Pin GPIO_PIN_9
+#define USART_TX_GPIO_Port GPIOA
+#define USART_RX_Pin GPIO_PIN_10
+#define USART_RX_GPIO_Port GPIOA
+#define CAN_RX_Pin GPIO_PIN_11
+#define CAN_RX_GPIO_Port GPIOA
+#define CAN_TX_Pin GPIO_PIN_12
+#define CAN_TX_GPIO_Port GPIOA
 #define SWDIO_Pin GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin GPIO_PIN_14
 #define SWCLK_GPIO_Port GPIOA
-#define GPO_LedG_Pin GPIO_PIN_5
-#define GPO_LedG_GPIO_Port GPIOB
-#define GPO_LedY_Pin GPIO_PIN_6
-#define GPO_LedY_GPIO_Port GPIOB
-#define GPO_LedR_Pin GPIO_PIN_7
-#define GPO_LedR_GPIO_Port GPIOB
+#define LedG_Pin GPIO_PIN_5
+#define LedG_GPIO_Port GPIOB
+#define LedY_Pin GPIO_PIN_6
+#define LedY_GPIO_Port GPIOB
+#define LedR_Pin GPIO_PIN_7
+#define LedR_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
+#define COUNTOF(__BUFFER__)   (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

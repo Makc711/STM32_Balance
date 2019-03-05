@@ -33,7 +33,12 @@
   <MCUMakFile>stm32.mak</MCUMakFile>
   <ReferencedFrameworks />
   <FrameworkProperties>
-    <Entries />
+    <Entries>
+      <KeyValue>
+        <Key>com.sysprogs.bspoptions.stm32.hal_legacy</Key>
+        <Value>USE_HAL_LEGACY</Value>
+      </KeyValue>
+    </Entries>
   </FrameworkProperties>
   <TestFrameworkProperties>
     <Entries />
@@ -44,7 +49,7 @@
     <AllDependencies>
       <ProjectDependency>
         <RelativePath>..\Balance.gpdsc</RelativePath>
-        <Timestamp>131946133911316002</Timestamp>
+        <Timestamp>131958911546164002</Timestamp>
       </ProjectDependency>
     </AllDependencies>
     <RootDirectory>
@@ -258,6 +263,9 @@
           <RelativePath>..\Inc\can.h</RelativePath>
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
+          <RelativePath>..\Inc\dma.h</RelativePath>
+        </VirtualFileSnapshot>
+        <VirtualFileSnapshot>
           <RelativePath>..\Inc\i2c.h</RelativePath>
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
@@ -280,6 +288,9 @@
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
           <RelativePath>..\Src\can.c</RelativePath>
+        </VirtualFileSnapshot>
+        <VirtualFileSnapshot>
+          <RelativePath>..\Src\dma.c</RelativePath>
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
           <RelativePath>..\Src\i2c.c</RelativePath>

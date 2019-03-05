@@ -53,13 +53,30 @@
 extern UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN Private defines */
+/********************  UART command codes  *********************/
+typedef enum
+{
+	UART_COMMAND_MK_BALANCING_IN_ENABLE      = 0x51U, /*!< Command from MK. Enable balancing in. */
+	UART_COMMAND_MK_BALANCING_OUT_ENABLE     = 0x52U, /*!< Command from MK. Enable balancing out. */
+	UART_COMMAND_MK_BALANCING_DISABLE        = 0x53U, /*!< Command from MK. Disable balancing. */
+	UART_COMMAND_MK_SEND_MEASUREMENTS        = 0x54U, /*!< Command from MK. Send the measurements struct. */
+	UART_COMMAND_MK_SEND_SETTINGS_CHECKSUM   = 0x55U, /*!< Command from MK. Send checksum settings. */
+	UART_COMMAND_MK_UPDATE_SETTINGS          = 0x56U, /*!< Command from MK. Update settings. */
+	UART_COMMAND_MK_OK			             = 0x5FU, /*!< Command from MK. OK. */
+	UART_COMMAND_MK_ERROR			         = 0x50U, /*!< Command from MK. Error. */
+	UART_COMMAND_MA_OK			             = 0x2FU, /*!< Command from MA. OK. */
+	UART_COMMAND_MA_ERROR			         = 0x20U  /*!< Command from MA. Error. */
+}UART_Command;
 
 /* USER CODE END Private defines */
 
 void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+void UART_ReceiveIncomingPackageSize();
+bool UART_TransmitData(uint8_t *data, const uint8_t size);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -38,6 +38,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "can.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -71,6 +73,10 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern ADC_HandleTypeDef hadc1;
+extern CAN_HandleTypeDef hcan;
+extern DMA_HandleTypeDef hdma_usart1_tx;
+extern DMA_HandleTypeDef hdma_usart1_rx;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
@@ -211,6 +217,93 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles DMA1 channel4 global interrupt.
+  */
+void DMA1_Channel4_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel4_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+  /* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel5 global interrupt.
+  */
+void DMA1_Channel5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles ADC1 and ADC2 global interrupts.
+  */
+void ADC1_2_IRQHandler(void)
+{
+  /* USER CODE BEGIN ADC1_2_IRQn 0 */
+
+  /* USER CODE END ADC1_2_IRQn 0 */
+  HAL_ADC_IRQHandler(&hadc1);
+  /* USER CODE BEGIN ADC1_2_IRQn 1 */
+
+  /* USER CODE END ADC1_2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USB low priority or CAN RX0 interrupts.
+  */
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
+	if (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) > 0)
+	{
+		CAN_RxHeaderTypeDef CAN_RxMessage;
+		CAN_RxMessage.StdId = 0x00;
+		CAN_RxMessage.ExtId = 0x00;
+		uint8_t CAN_RxData[8];
+
+		if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &CAN_RxMessage, CAN_RxData) != HAL_OK)
+		{
+			Error_Handler();
+		}
+		/*
+		if (CAN_RxMessage.IDE == CAN_ID_STD)
+		{
+			if (CAN_RxMessage.StdId == CAN_CMD_Test_Send)
+			{
+				if (HAL_UART_Transmit_IT(&huart1, CAN_RxData, CAN_RxMessage.DLC) != HAL_OK)
+				{
+					Error_Handler();
+				}
+				CAN_Send_Ok();
+			} 
+			else if (CAN_RxMessage.StdId == CAN_CMD_Test_Ok)
+			{
+				uint8_t message[] = "CAN_CMD_Test_Ok\n";
+//				if (HAL_UART_Transmit_IT(&huart1, message, COUNTOF(message)) != HAL_OK)
+//				{
+//					Error_Handler();
+//				}
+			}
+		}*/
+	}
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan);
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
+
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
+}
 
 /**
   * @brief This function handles USART1 global interrupt.

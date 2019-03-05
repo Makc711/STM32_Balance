@@ -42,13 +42,14 @@
 #include "main.h"
 #include "adc.h"
 #include "can.h"
+#include "dma.h"
 #include "i2c.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "memoryMA.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,18 +70,31 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+#define READY 1
+#define BUSY 0
+uint8_t ADC_flag = BUSY;
+uint8_t adc0 = 0;
 
+uint8_t transmitMsg[] = "Transmit1234567887654321 DMA abcdefghijklmnopqrstuvwxyz\r\n";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void CAN_Send_Test();
+void CAN_Send_Msg();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+	if (hadc == &hadc1)
+	{
+		ADC_flag = READY;
+		adc0 = HAL_ADC_GetValue(&hadc1);
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -111,22 +125,32 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_CAN_Init();
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+	CAN_ConfigureFilter();
+	HAL_CAN_Start(&hcan);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	UART_ReceiveIncomingPackageSize();
+	while (true)
+	{
+		executeActions();
+		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
+		HAL_Delay(500);
+//		CAN_Send_Test();
+//		ADC_flag = BUSY;
+//		HAL_ADC_Start_IT(&hadc1);
+//		while (ADC_flag == BUSY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -186,7 +210,13 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-
+	while (1) 
+	{
+		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
+		HAL_Delay(40);
+		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
+		HAL_Delay(40);
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 

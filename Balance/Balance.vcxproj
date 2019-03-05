@@ -41,8 +41,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../Drivers/CMSIS/Include;..\Inc;..\Drivers\CMSIS\Device\ST\STM32F1xx\Include;..\Drivers\STM32F1xx_HAL_Driver\Inc;..\Drivers\STM32F1xx_HAL_Driver\Src;..\Drivers\STM32F1xx_HAL_Driver\Inc\Legacy;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DEBUG=1;flash_layout;STM32F103xB;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../Drivers/CMSIS/Include;C:\Program Files\Toolchain GCC/arm-eabi/sys-include;..\Inc;..\Drivers\CMSIS\Device\ST\STM32F1xx\Include;..\Drivers\STM32F1xx_HAL_Driver\Inc;..\Drivers\STM32F1xx_HAL_Driver\Src;..\Drivers\STM32F1xx_HAL_Driver\Inc\Legacy;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG=1;DEBUG_DEFAULT_INTERRUPT_HANDLERS;flash_layout;STM32F103xB;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions />
       <CLanguageStandard />
       <CPPLanguageStandard />
@@ -80,10 +80,10 @@
     <ClCompile Include="..\Src\adc.c" />
     <ClCompile Include="..\Src\can.c" />
     <ClCompile Include="..\Src\i2c.c" />
-    <ClCompile Include="..\Src\usart.c" />
+    <ClCompile Include="..\Src\memoryMA.c" />
     <ClCompile Include="..\Src\stm32f1xx_it.c" />
-    <ClCompile Include="..\Src\stm32f1xx_hal_msp.c" />
-    <ClCompile Include="..\Src\main.cpp" />
+    <ClCompile Include="..\Src\usart.c" />
+    <ClCompile Include="..\Src\main.c" />
     <ClCompile Include="..\Drivers\CMSIS\Device\ST\STM32F1xx\Source\Templates\system_stm32f1xx.c" />
     <ClCompile Include="..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal.c" />
     <ClCompile Include="..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_adc.c" />
@@ -107,9 +107,9 @@
     <ClInclude Include="..\Inc\adc.h" />
     <ClInclude Include="..\Inc\can.h" />
     <ClInclude Include="..\Inc\i2c.h" />
-    <ClInclude Include="..\Inc\usart.h" />
+    <ClInclude Include="..\Inc\memoryMA.h" />
     <ClInclude Include="..\Inc\stm32f1xx_it.h" />
-    <ClInclude Include="..\Inc\stm32f1xx_hal_conf.h" />
+    <ClInclude Include="..\Inc\usart.h" />
     <ClInclude Include="..\Inc\main.h" />
     <ClInclude Include="..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h" />
     <ClInclude Include="..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h" />
@@ -137,5 +137,7 @@
     <None Include="Balance-Debug.vgdbsettings" />
     <None Include="Balance-Release.vgdbsettings" />
     <None Include="stm32.xml" />
+    <ClCompile Include="..\Src\dma.c" />
+    <ClInclude Include="..\Inc\dma.h" />
   </ItemGroup>
 </Project>
