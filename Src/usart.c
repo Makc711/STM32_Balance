@@ -64,8 +64,10 @@
  ******************************************************************************/
 bool isUART_TxReady = true;
 uint8_t transmitBuffer[TX_BUFFER_SIZE];
-uint8_t unsentBytes = 0;
-uint8_t beginningOfDataPackage = 0;
+uint8_t txBufferOfPackage[PACKAGE_SIZE];
+uint8_t txBufferHead = 0;
+uint8_t txBufferTail = 0;
+uint8_t countOfUnsentBytes = 0;
 //------------------------------------------
 bool isWaitingIncomingPackageSize = true;
 uint8_t incomingPackageSize = 0;
@@ -232,7 +234,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart == &huart1)
 	{
-		if (unsentBytes == 0)
+		if(countOfUnsentBytes == 0)
 		{
 			isUART_TxReady = true;
 		} else
@@ -240,6 +242,47 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			UART_TransmitNextPackage();
 		}
 	}
+}
+
+void UART_TransmitNextPackage()
+{
+	uint8_t numberOfUnsentBytes;
+	if (countOfUnsentBytes <= PACKAGE_SIZE)
+	{
+		numberOfUnsentBytes = countOfUnsentBytes;
+	} else
+	{
+		numberOfUnsentBytes = PACKAGE_SIZE;
+	}
+	for (int i = 0; i < numberOfUnsentBytes; i++)
+	{
+		txBufferOfPackage[i] = transmitBuffer[txBufferHead];
+		txBufferHead = (uint8_t)((txBufferHead + 1) & (TX_BUFFER_SIZE - 1));
+	}
+	countOfUnsentBytes -= numberOfUnsentBytes;
+	UART_Transmit(txBufferOfPackage, numberOfUnsentBytes);
+}
+
+bool UART_TransmitData(uint8_t *data, const uint8_t size)
+{
+	bool isDataBufferedTX = false;
+	const uint16_t txCount = countOfUnsentBytes + size;
+	if (txCount <= TX_BUFFER_SIZE)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			transmitBuffer[txBufferTail] = data[i];
+			txBufferTail = (uint8_t)((txBufferTail + 1) & (TX_BUFFER_SIZE - 1));
+		}
+		countOfUnsentBytes = (uint8_t)txCount;
+		if (isUART_TxReady == true)
+		{
+			isUART_TxReady = false;
+			UART_TransmitNextPackage();
+		}
+		isDataBufferedTX = true;
+	}
+	return isDataBufferedTX;
 }
 
 // Обработчик прерывания после окончания принятия всех заявленных байт
@@ -253,11 +296,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			{
 				isWaitingIncomingPackageSize = false;
 				UART_Receive(receiveBuffer, incomingPackageSize);
-				UART_TransmitCommand(UART_COMMAND_MA_OK);
 			} else
 			{
 				UART_ReceiveIncomingPackageSize();
-				UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+				UART_TransmitCommand(UART_COMMAND_MA_ERROR); // Ошибка в канале связи, нужно повторить отправку
 			}
 		} else
 		{
@@ -277,51 +319,21 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				if (incomingPackageSize - COMMAND_SIZE > 0)
 				{
 					UART_ReceiveIncomingPackageSize();
-					UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+					UART_TransmitCommand(UART_COMMAND_MA_ERROR); // Неправильное сообщение (в пакете должен быть только 1 байт команды)
 				} else
 				{
 					if (executeTheCommand(receiveBuffer[Index_Of_Command_byte]) == true)
 					{
 						UART_ReceiveIncomingPackageSize();
-						UART_TransmitCommand(UART_COMMAND_MA_OK);
+						UART_TransmitCommand(UART_COMMAND_MA_OK); // Команда исполнена
 					} else
 					{
 						UART_ReceiveIncomingPackageSize();
-						UART_TransmitCommand(UART_COMMAND_MA_ERROR);
+						UART_TransmitCommand(UART_COMMAND_MA_ERROR); // Такой команды не существует (возможно ошибка в канале связи)
 					}
 				}
 			}
 		}
-	}
-}
-
-bool UART_TransmitData(uint8_t *data, const uint8_t size)
-{
-	if (isUART_TxReady == false)
-	{
-		return false;
-	}
-	isUART_TxReady = false;
-	memcpy(transmitBuffer, data, size);
-	unsentBytes = size;
-	beginningOfDataPackage = 0;
-	UART_TransmitNextPackage();
-	return true;
-}
-
-void UART_TransmitNextPackage()
-{
-	if (unsentBytes <= PACKAGE_SIZE)
-	{
-		const uint8_t numberOfLastBytes = unsentBytes;
-		unsentBytes = 0;
-		UART_Transmit(transmitBuffer + beginningOfDataPackage, numberOfLastBytes);
-		beginningOfDataPackage = 0;
-	} else
-	{
-		unsentBytes -= PACKAGE_SIZE;
-		UART_Transmit(transmitBuffer + beginningOfDataPackage, PACKAGE_SIZE);
-		beginningOfDataPackage += PACKAGE_SIZE;
 	}
 }
 
@@ -352,13 +364,13 @@ bool executeTheCommand(const UART_Command command)
 		setBalanceState(Balancing_DISABLE);
 		break;
 	case UART_COMMAND_MK_SEND_MEASUREMENTS:
-		setAction(SendMeasurements);
+		sendMeasurements();
 		break;
 	case UART_COMMAND_MK_SEND_SETTINGS_CHECKSUM:
-		setAction(SendSettingsChecksum);
+		sendSettingsChecksum();
 		break;
 	case UART_COMMAND_MK_UPDATE_SETTINGS:
-		setAction(UpdateSettings);
+		updateSettings();
 		break;
 	default:
 		isCommandCompleted = false;

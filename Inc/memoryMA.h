@@ -42,34 +42,16 @@ typedef enum
 #define MA_Event_Safety_Status_MA_Fail_Msk       (0x1U << MA_Event_Safety_Status_MA_Fail_Pos)  /*!< 0x0200 */
 #define MA_Event_Safety_Status_MA_Fail           MA_Event_Safety_Status_MA_Fail_Msk            /*!< MA circuit error */
 
-typedef enum
-{
-	SendMeasurements,
-	SendSettingsChecksum,
-	UpdateSettings
-}MA_Action;
-
-/******************  Bit definition for actions register  *******************/
-#define MA_Action_SendMeasurements_Pos           (0U)                               
-#define MA_Action_SendMeasurements_Msk           (0x1U << MA_Action_SendMeasurements_Pos)      /*!< 0x0001 */
-#define MA_Action_SendMeasurements               MA_Action_SendMeasurements_Msk                /*!< Send measurements */
-#define MA_Action_SendSettingsChecksum_Pos       (1U)                               
-#define MA_Action_SendSettingsChecksum_Msk       (0x1U << MA_Action_SendSettingsChecksum_Pos)  /*!< 0x0002 */
-#define MA_Action_SendSettingsChecksum           MA_Action_SendSettingsChecksum_Msk            /*!< Send settings checksum */
-#define MA_Action_UpdateSettings_Pos             (2U)                               
-#define MA_Action_UpdateSettings_Msk             (0x1U << MA_Action_UpdateSettings_Pos)        /*!< 0x0004 */
-#define MA_Action_UpdateSettings                 MA_Action_UpdateSettings_Msk                  /*!< Update settings */
-
 /** 
   * @brief MA measurements Structure definition
   */
 typedef struct
 {
 	uint16_t U_cell;              /*!< Cell voltage, mV */
-	int16_t I_balance;           /*!< Balancing current, mA */
-	int8_t  TemperatureAnode;    /*!< Anode cell temperature (-), 'C */
-	int8_t  TemperatureCathode;  /*!< Cathode cell temperature (+), 'C */
-	int8_t  TemperatureVT1;      /*!< VT1 transistor temperature, 'C */
+	int16_t  I_balance;           /*!< Balancing current, mA */
+	int8_t   TemperatureAnode;    /*!< Anode cell temperature (-), 'C */
+	int8_t   TemperatureCathode;  /*!< Cathode cell temperature (+), 'C */
+	int8_t   TemperatureVT1;      /*!< VT1 transistor temperature, 'C */
 	uint16_t MA_Event_Register;   /*!< MA Event Register */
 }MA_MeasurementsTypeDef;
 
@@ -84,14 +66,14 @@ typedef struct
 	uint16_t CUV_Threshold;   /*!< Cell Under Voltage Threshold, mV */
 	uint16_t CUV_Recovery;    /*!< Cell Under Voltage Recovery, mV */
 	uint16_t CUV_Time;        /*!< Cell Under Voltage Time, ms */
-	int8_t  COT_Threshold;    /*!< Cell Over Temperature Threshold, 'C */
-	int8_t  COT_Recovery;     /*!< Cell Over Temperature Recovery, 'C */
+	int8_t   COT_Threshold;   /*!< Cell Over Temperature Threshold, 'C */
+	int8_t   COT_Recovery;    /*!< Cell Over Temperature Recovery, 'C */
 	uint16_t COT_Time;        /*!< Cell Over Temperature Time, ms */
-	int8_t  CUT_Threshold;    /*!< Cell Under Temperature Threshold, 'C */
-	int8_t  CUT_Recovery;     /*!< Cell Under Temperature Recovery, 'C */
+	int8_t   CUT_Threshold;   /*!< Cell Under Temperature Threshold, 'C */
+	int8_t   CUT_Recovery;    /*!< Cell Under Temperature Recovery, 'C */
 	uint16_t CUT_Time;        /*!< Cell Under Temperature Time, ms */
-	int8_t  OTT_Threshold;    /*!< Over Temperature Tansistor Threshold, 'C */
-	int8_t  OTT_Recovery;     /*!< Over Temperature Tansistor Recovery, 'C */
+	int8_t   OTT_Threshold;   /*!< Over Temperature Tansistor Threshold, 'C */
+	int8_t   OTT_Recovery;    /*!< Over Temperature Tansistor Recovery, 'C */
 	uint16_t OTT_Time;        /*!< Over Temperature Tansistor Time, ms */
 }MA_SettingsTypeDef;
 
@@ -100,5 +82,6 @@ extern MA_SettingsTypeDef settings;
 
 bool writeDataToSettingsArray(uint8_t *data, const uint8_t size, const uint8_t address);
 void setBalanceState(const MA_BalanceState state);
-void setAction(const MA_Action action);
-void executeActions();
+void sendMeasurements();
+void sendSettingsChecksum();
+void updateSettings();

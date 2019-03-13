@@ -48,49 +48,20 @@ void setBalanceState(const MA_BalanceState state)
 	}
 }
 
-void setAction(const MA_Action action)
+void sendMeasurements()
 {
-	switch (action)
-	{
-	case SendMeasurements:
-		actionsRegister |= MA_Action_SendMeasurements_Msk;
-		break;
-	case SendSettingsChecksum:
-		actionsRegister |= MA_Action_SendSettingsChecksum_Msk;
-		break;
-	case UpdateSettings:
-		actionsRegister |= MA_Action_UpdateSettings_Msk;
-		break;
-	default:
-		Error_Handler();
-	}
+	UART_TransmitData((uint8_t*)&measurements, sizeOfMeasurementsStruct);
 }
 
-void executeActions()
+void sendSettingsChecksum()
 {
-	if (actionsRegister > 0)
-	{
-		if ((actionsRegister & MA_Action_SendMeasurements_Msk) == MA_Action_SendMeasurements)
-		{
-			if (UART_TransmitData((uint8_t*)&measurements, sizeOfMeasurementsStruct) == true)
-			{
-				actionsRegister &= ~MA_Action_SendMeasurements_Msk;
-			}
-		}
-		if ((actionsRegister & MA_Action_SendSettingsChecksum_Msk) == MA_Action_SendSettingsChecksum)
-		{
-			uint8_t checksum = calculateSettingsChecksum();
-			if (UART_TransmitData((uint8_t*)&checksum, sizeof(checksum)) == true)
-			{
-				actionsRegister &= ~MA_Action_SendSettingsChecksum_Msk;
-			}
-		}
-		if ((actionsRegister & MA_Action_UpdateSettings_Msk) == MA_Action_UpdateSettings)
-		{
-			memcpy(&settings, settingsArray, sizeOfSettingsStruct);
-			actionsRegister &= ~MA_Action_UpdateSettings_Msk;
-		}
-	}
+	uint8_t checksum = calculateSettingsChecksum();
+	UART_TransmitData((uint8_t*)&checksum, sizeof(checksum));
+}
+
+void updateSettings()
+{
+	memcpy(&settings, settingsArray, sizeOfSettingsStruct);
 }
 
 uint8_t calculateSettingsChecksum()

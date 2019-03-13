@@ -140,9 +140,9 @@ int main(void)
 	UART_ReceiveIncomingPackageSize();
 	while (true)
 	{
-		executeActions();
 		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
 		HAL_Delay(500);
+
 //		CAN_Send_Test();
 //		ADC_flag = BUSY;
 //		HAL_ADC_Start_IT(&hadc1);
