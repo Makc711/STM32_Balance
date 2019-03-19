@@ -3,6 +3,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#define CHECKSUM_CONSTANT 44111
+
 typedef enum
 {
 	BalancingIn_ENABLE,

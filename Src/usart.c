@@ -41,7 +41,6 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-#include <string.h>
 #include "memoryMA.h"
 
 /******************************************************************************
@@ -55,9 +54,9 @@
 #define MIN_PACKAGE_SIZE COMMAND_SIZE
 #define MAX_PACKAGE_SIZE PACKAGE_SIZE
 
-#define UART_Command_State_Pos                (7U)                               
-#define UART_Command_State_Msk                (0x1U << UART_Command_State_Pos)           /*!< 0x80 */
-#define UART_Command_State_Data               UART_Command_State_Msk                     /*!< Command_State Data */
+#define UART_Command_State_Data_Pos           (7U)                               
+#define UART_Command_State_Data_Msk           (0x1U << UART_Command_State_Data_Pos)           /*!< 0x80 */
+#define UART_Command_State_Data               UART_Command_State_Data_Msk                     /*!< Command_State Data */
 
 /******************************************************************************
  * ќбъ€влени€ локальных переменных
@@ -303,7 +302,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			}
 		} else
 		{
-			if ((receiveBuffer[Index_Of_Command_byte] & UART_Command_State_Msk) == UART_Command_State_Data)
+			if ((receiveBuffer[Index_Of_Command_byte] & UART_Command_State_Data_Msk) == UART_Command_State_Data)
 			{
 				if (UART_SaveReceivedData() == true)
 				{
@@ -365,6 +364,9 @@ bool executeTheCommand(const UART_Command command)
 		break;
 	case UART_COMMAND_MK_SEND_MEASUREMENTS:
 		sendMeasurements();
+		break;
+	case UART_COMMAND_MK_WAIT_SETTINGS:
+		setBalanceState(Balancing_DISABLE);
 		break;
 	case UART_COMMAND_MK_SEND_SETTINGS_CHECKSUM:
 		sendSettingsChecksum();

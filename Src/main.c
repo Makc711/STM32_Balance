@@ -138,6 +138,13 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	UART_ReceiveIncomingPackageSize();
+
+	measurements.U_cell = 3123;
+	measurements.I_balance = -456;
+	measurements.TemperatureAnode = 15;
+	measurements.TemperatureCathode = -23;
+	measurements.TemperatureVT1 = 115;
+	measurements.MA_Event_Register = 0b0000001111011100;
 	while (true)
 	{
 		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);

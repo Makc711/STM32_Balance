@@ -60,8 +60,9 @@ typedef enum
 	UART_COMMAND_MK_BALANCING_OUT_ENABLE     = 0x52, /*!< Command from MK. Enable balancing out. */
 	UART_COMMAND_MK_BALANCING_DISABLE        = 0x53, /*!< Command from MK. Disable balancing. */
 	UART_COMMAND_MK_SEND_MEASUREMENTS        = 0x54, /*!< Command from MK. Send the measurements struct. */
-	UART_COMMAND_MK_SEND_SETTINGS_CHECKSUM   = 0x55, /*!< Command from MK. Send checksum settings. */
-	UART_COMMAND_MK_UPDATE_SETTINGS          = 0x56, /*!< Command from MK. Update settings. */
+	UART_COMMAND_MK_WAIT_SETTINGS            = 0x55, /*!< Command from MK. Wait settings. */
+	UART_COMMAND_MK_SEND_SETTINGS_CHECKSUM   = 0x56, /*!< Command from MK. Send checksum settings. */
+	UART_COMMAND_MK_UPDATE_SETTINGS          = 0x57, /*!< Command from MK. Update settings. */
 	UART_COMMAND_MK_OK			             = 0x5F, /*!< Command from MK. OK. */
 	UART_COMMAND_MK_ERROR			         = 0x50, /*!< Command from MK. Error. */
 	UART_COMMAND_MA_OK			             = 0x2F, /*!< Command from MA. OK. */

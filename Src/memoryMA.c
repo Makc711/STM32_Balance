@@ -66,13 +66,10 @@ void updateSettings()
 
 uint8_t calculateSettingsChecksum()
 {
-	uint8_t checksum = 0;
+	uint16_t checksum = 0;
 	for (uint8_t i = 0; i < sizeOfSettingsStruct; i++)
 	{
-		for (uint8_t j = 0; j < 8; j++)
-		{
-			checksum += ((settingsArray[i] >> j) & 0x1U);
-		}
+		checksum += (uint16_t) (settingsArray[i] * CHECKSUM_CONSTANT);
 	}
-	return checksum;
+	return (uint8_t) checksum;
 }
