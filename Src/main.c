@@ -73,7 +73,7 @@
 #define READY 1
 #define BUSY 0
 uint8_t ADC_flag = BUSY;
-uint8_t adc0 = 0;
+uint16_t adc0 = 0;
 
 uint8_t transmitMsg[] = "Transmit1234567887654321 DMA abcdefghijklmnopqrstuvwxyz\r\n";
 /* USER CODE END PV */
@@ -111,7 +111,6 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -149,7 +148,6 @@ int main(void)
 	{
 		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
 		HAL_Delay(500);
-
 //		CAN_Send_Test();
 //		ADC_flag = BUSY;
 //		HAL_ADC_Start_IT(&hadc1);

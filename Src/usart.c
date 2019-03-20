@@ -61,14 +61,14 @@
 /******************************************************************************
  * ќбъ€влени€ локальных переменных
  ******************************************************************************/
-bool isUART_TxReady = true;
+volatile bool isUART_TxReady = true;
 uint8_t transmitBuffer[TX_BUFFER_SIZE];
 uint8_t txBufferOfPackage[PACKAGE_SIZE];
 uint8_t txBufferHead = 0;
 uint8_t txBufferTail = 0;
-uint8_t countOfUnsentBytes = 0;
+volatile uint8_t countOfUnsentBytes = 0;
 //------------------------------------------
-bool isWaitingIncomingPackageSize = true;
+volatile bool isWaitingIncomingPackageSize = true;
 uint8_t incomingPackageSize = 0;
 uint8_t receiveBuffer[RX_BUFFER_SIZE];
 

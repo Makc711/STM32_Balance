@@ -47,7 +47,7 @@ typedef enum
 /** 
   * @brief MA measurements Structure definition
   */
-typedef struct
+typedef volatile  struct
 {
 	uint16_t U_cell;              /*!< Cell voltage, mV */
 	int16_t  I_balance;           /*!< Balancing current, mA */
@@ -60,7 +60,7 @@ typedef struct
 /** 
   * @brief MA settings Structure definition
   */
-typedef struct
+typedef volatile struct
 {
 	uint16_t COV_Threshold;   /*!< Cell Over Voltage Threshold, mV */
 	uint16_t COV_Recovery;    /*!< Cell Over Voltage Recovery, mV */
