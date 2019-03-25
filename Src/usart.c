@@ -42,6 +42,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "memoryMA.h"
+#include <string.h>
 
 /******************************************************************************
  * ќбъ€влени€ локальных определений
@@ -378,6 +379,11 @@ bool executeTheCommand(const UART_Command command)
 		isCommandCompleted = false;
 	}
 	return isCommandCompleted;
+}
+
+void UART_SendString(char *str)
+{
+	UART_TransmitData((uint8_t*) str, strlen(str));
 }
 /* USER CODE END 1 */
 

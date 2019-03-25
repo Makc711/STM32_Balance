@@ -87,3 +87,4 @@ void setBalanceState(const MA_BalanceState state);
 void sendMeasurements();
 void sendSettingsChecksum();
 void updateSettings();
+void updateMeasurements();

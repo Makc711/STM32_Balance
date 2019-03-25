@@ -2,6 +2,7 @@
 #include "memoryMA.h"
 #include <string.h>
 #include "usart.h"
+#include "adc.h"
 
 MA_MeasurementsTypeDef measurements = { 0 };
 const uint8_t sizeOfMeasurementsStruct = sizeof(measurements);
@@ -61,7 +62,7 @@ void sendSettingsChecksum()
 
 void updateSettings()
 {
-	memcpy(&settings, settingsArray, sizeOfSettingsStruct);
+	memcpy((void*) &settings, settingsArray, sizeOfSettingsStruct);
 }
 
 uint8_t calculateSettingsChecksum()
@@ -72,4 +73,14 @@ uint8_t calculateSettingsChecksum()
 		checksum += (uint16_t) (settingsArray[i] * CHECKSUM_CONSTANT);
 	}
 	return (uint8_t) checksum;
+}
+
+void updateMeasurements()
+{
+	uint16_t data0, data7;
+	if (getADCData(&data0, &data7))
+	{
+		measurements.I_balance = (data0 - ADC_I_ZERO_BIT) * ADC_I_K;
+		measurements.U_cell = data7 * ADC_U_ACC_K;
+	}
 }

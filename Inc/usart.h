@@ -78,6 +78,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 void UART_ReceiveIncomingPackageSize();
 bool UART_TransmitData(uint8_t *data, const uint8_t size);
+void UART_SendString(char *str);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

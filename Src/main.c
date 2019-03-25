@@ -70,12 +70,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-#define READY 1
-#define BUSY 0
-uint8_t ADC_flag = BUSY;
-uint16_t adc0 = 0;
 
-uint8_t transmitMsg[] = "Transmit1234567887654321 DMA abcdefghijklmnopqrstuvwxyz\r\n";
+
+char str[20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,14 +84,7 @@ void CAN_Send_Msg();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-{
-	if (hadc == &hadc1)
-	{
-		ADC_flag = READY;
-		adc0 = HAL_ADC_GetValue(&hadc1);
-	}
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -104,13 +94,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -132,26 +123,27 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	CAN_ConfigureFilter();
 	HAL_CAN_Start(&hcan);
+
+	UART_ReceiveIncomingPackageSize();
+	startADCConversion();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	UART_ReceiveIncomingPackageSize();
+	
 
-	measurements.U_cell = 3123;
-	measurements.I_balance = -456;
 	measurements.TemperatureAnode = 15;
 	measurements.TemperatureCathode = -23;
 	measurements.TemperatureVT1 = 115;
 	measurements.MA_Event_Register = 0b0000001111011100;
 	while (true)
 	{
+		updateMeasurements();
 		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
 		HAL_Delay(500);
+//		sprintf(str, "U=%dmV I=%dmA\r\n", measurements.U_cell, measurements.I_balance);
+//		UART_SendString(str);
 //		CAN_Send_Test();
-//		ADC_flag = BUSY;
-//		HAL_ADC_Start_IT(&hadc1);
-//		while (ADC_flag == BUSY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -215,7 +207,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-	while (1) 
+	while (true) 
 	{
 		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
 		HAL_Delay(40);
