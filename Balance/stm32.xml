@@ -49,7 +49,7 @@
     <AllDependencies>
       <ProjectDependency>
         <RelativePath>..\Balance.gpdsc</RelativePath>
-        <Timestamp>131977149056741002</Timestamp>
+        <Timestamp>131987580753896002</Timestamp>
       </ProjectDependency>
     </AllDependencies>
     <RootDirectory>
@@ -213,10 +213,10 @@
                   <RelativePath>..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h</RelativePath>
                 </VirtualFileSnapshot>
                 <VirtualFileSnapshot>
-                  <RelativePath>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c</RelativePath>
+                  <RelativePath>..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h</RelativePath>
                 </VirtualFileSnapshot>
                 <VirtualFileSnapshot>
-                  <RelativePath>..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h</RelativePath>
+                  <RelativePath>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c</RelativePath>
                 </VirtualFileSnapshot>
                 <VirtualFileSnapshot>
                   <RelativePath>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim_ex.c</RelativePath>
@@ -269,6 +269,9 @@
           <RelativePath>..\Inc\i2c.h</RelativePath>
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
+          <RelativePath>..\Inc\tim.h</RelativePath>
+        </VirtualFileSnapshot>
+        <VirtualFileSnapshot>
           <RelativePath>..\Inc\usart.h</RelativePath>
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
@@ -294,6 +297,9 @@
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
           <RelativePath>..\Src\i2c.c</RelativePath>
+        </VirtualFileSnapshot>
+        <VirtualFileSnapshot>
+          <RelativePath>..\Src\tim.c</RelativePath>
         </VirtualFileSnapshot>
         <VirtualFileSnapshot>
           <RelativePath>..\Src\usart.c</RelativePath>

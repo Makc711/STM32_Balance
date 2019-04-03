@@ -139,5 +139,7 @@
     <None Include="stm32.xml" />
     <ClCompile Include="..\Src\dma.c" />
     <ClInclude Include="..\Inc\dma.h" />
+    <ClCompile Include="..\Src\tim.c" />
+    <ClInclude Include="..\Inc\tim.h" />
   </ItemGroup>
 </Project>

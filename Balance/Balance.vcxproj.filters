@@ -284,6 +284,12 @@
     <ClCompile Include="..\Src\memoryMA.c">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\tim.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\Inc\tim.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Inc\usart.h">

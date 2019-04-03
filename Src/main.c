@@ -44,6 +44,7 @@
 #include "can.h"
 #include "dma.h"
 #include "i2c.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -120,18 +121,22 @@ int main(void)
   MX_CAN_Init();
   MX_I2C2_Init();
   MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	CAN_ConfigureFilter();
 	HAL_CAN_Start(&hcan);
 
 	UART_ReceiveIncomingPackageSize();
 	startADCConversion();
+
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+//	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, 80);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	
-
 	measurements.TemperatureAnode = 15;
 	measurements.TemperatureCathode = -23;
 	measurements.TemperatureVT1 = 115;
@@ -139,9 +144,25 @@ int main(void)
 	while (true)
 	{
 		updateMeasurements();
-		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
-		HAL_Delay(500);
-//		sprintf(str, "U=%dmV I=%dmA\r\n", measurements.U_cell, measurements.I_balance);
+//		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
+//		HAL_Delay(500);
+
+//		for (int i = 0; i <= 70; i++)
+//		{
+//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, i);
+//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, i + 10);
+//			HAL_Delay(200);
+//		}
+//		HAL_Delay(100);
+//		for (int i = 70; i >= 0; i--)
+//		{
+//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, i);
+//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, i + 10);
+//			HAL_Delay(200);
+//		}
+//		HAL_Delay(100);
+
+//		sprintf(str, "T=%d\r\n", tmp);
 //		UART_SendString(str);
 //		CAN_Send_Test();
     /* USER CODE END WHILE */
