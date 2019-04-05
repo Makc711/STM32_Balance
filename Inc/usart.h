@@ -67,7 +67,7 @@ typedef enum
 	UART_COMMAND_MK_ERROR			         = 0x50, /*!< Command from MK. Error. */
 	UART_COMMAND_MA_OK			             = 0x2F, /*!< Command from MA. OK. */
 	UART_COMMAND_MA_ERROR			         = 0x20  /*!< Command from MA. Error. */
-}UART_Command;
+} UART_Command;
 
 /* USER CODE END Private defines */
 

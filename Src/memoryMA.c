@@ -31,18 +31,15 @@ void setBalanceState(const MA_BalanceState state)
 	{
 	case BalancingIn_ENABLE:
 		measurements.MA_Event_Register &= ~MA_Event_Balancing_Out_Msk;
-		measurements.MA_Event_Register &= ~MA_Event_Transformer_Out_Msk;
 		measurements.MA_Event_Register |= MA_Event_Balancing_In_Msk;
 		break;
 	case BalancingOut_ENABLE:
 		measurements.MA_Event_Register &= ~MA_Event_Balancing_In_Msk;
-		measurements.MA_Event_Register |= MA_Event_Transformer_Out_Msk;
 		measurements.MA_Event_Register |= MA_Event_Balancing_Out_Msk;
 		break;
 	case Balancing_DISABLE:
 		measurements.MA_Event_Register &= ~MA_Event_Balancing_In_Msk;
 		measurements.MA_Event_Register &= ~MA_Event_Balancing_Out_Msk;
-		measurements.MA_Event_Register &= ~MA_Event_Transformer_Out_Msk;
 		break;
 	default:
 		Error_Handler();

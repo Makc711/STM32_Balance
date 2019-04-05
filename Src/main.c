@@ -51,6 +51,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "memoryMA.h"
+#include "transformer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,73 +95,56 @@ void CAN_Send_Msg();
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
 	
-  /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_ADC1_Init();
-  MX_CAN_Init();
-  MX_I2C2_Init();
-  MX_USART1_UART_Init();
-  MX_TIM2_Init();
-  /* USER CODE BEGIN 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_ADC1_Init();
+	MX_CAN_Init();
+	MX_I2C2_Init();
+	MX_USART1_UART_Init();
+	MX_TIM2_Init();
+	/* USER CODE BEGIN 2 */
 	CAN_ConfigureFilter();
 	HAL_CAN_Start(&hcan);
 
 	UART_ReceiveIncomingPackageSize();
 	startADCConversion();
 
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-//	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, 80);
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	
 	measurements.TemperatureAnode = 15;
 	measurements.TemperatureCathode = -23;
 	measurements.TemperatureVT1 = 115;
-	measurements.MA_Event_Register = 0b0000001111011100;
+	measurements.MA_Event_Register = 0b0000000000000001;
 	while (true)
 	{
 		updateMeasurements();
+		updateBalancing();
 //		HAL_GPIO_TogglePin(LedTest_GPIO_Port, LedTest_Pin);
 //		HAL_Delay(500);
-
-//		for (int i = 0; i <= 70; i++)
-//		{
-//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, i);
-//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, i + 10);
-//			HAL_Delay(200);
-//		}
-//		HAL_Delay(100);
-//		for (int i = 70; i >= 0; i--)
-//		{
-//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, i);
-//			__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, i + 10);
-//			HAL_Delay(200);
-//		}
-//		HAL_Delay(100);
 
 //		sprintf(str, "T=%d\r\n", tmp);
 //		UART_SendString(str);
