@@ -43,6 +43,7 @@
 /* USER CODE BEGIN 0 */
 #include "memoryMA.h"
 #include <string.h>
+#include "transformer.h"
 
 /******************************************************************************
  * ќбъ€влени€ локальных определений
@@ -374,6 +375,9 @@ bool executeTheCommand(const UART_Command command)
 		break;
 	case UART_COMMAND_MK_UPDATE_SETTINGS:
 		updateSettings();
+		break;
+	case UART_COMMAND_MK_UPDATE_BALANCE_TIMER:
+		updateBalanceTimer();
 		break;
 	default:
 		isCommandCompleted = false;
