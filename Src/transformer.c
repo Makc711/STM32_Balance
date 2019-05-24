@@ -119,9 +119,9 @@ void enableBalancingIn()
 	{
 		if (((measurements.MA_Event_Register & MA_Event_Safety_Status_CUT_Msk) == MA_Event_Safety_Status_CUT) ||
 			((measurements.MA_Event_Register & MA_Event_BufferEnable_Msk) == MA_Event_BufferEnable)) // (measurements.MA_Event_Register & MA_Event_BufferEnable_Msk) != MA_Event_BufferEnable
-		{
-			disableBalancingIn();
-		} else
+			{
+				disableBalancingIn();
+			} else
 		{
 			if (isBalancingInEnabled == false)
 			{

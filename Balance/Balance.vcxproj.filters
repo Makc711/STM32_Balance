@@ -290,7 +290,7 @@
     <ClInclude Include="..\Inc\tim.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClCompile Include="transformer.c">
+    <ClCompile Include="..\Src\transformer.c">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -304,7 +304,7 @@
     <ClInclude Include="..\Inc\memoryMA.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="transformer.h">
+    <ClInclude Include="..\Inc\transformer.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

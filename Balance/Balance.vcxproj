@@ -82,6 +82,7 @@
     <ClCompile Include="..\Src\i2c.c" />
     <ClCompile Include="..\Src\memoryMA.c" />
     <ClCompile Include="..\Src\stm32f1xx_it.c" />
+    <ClCompile Include="..\Src\transformer.c" />
     <ClCompile Include="..\Src\usart.c" />
     <ClCompile Include="..\Src\main.c" />
     <ClCompile Include="..\Drivers\CMSIS\Device\ST\STM32F1xx\Source\Templates\system_stm32f1xx.c" />
@@ -101,8 +102,7 @@
     <ClCompile Include="..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim_ex.c" />
     <ClCompile Include="..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_dma.c" />
     <ClCompile Include="..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_i2c.c" />
-    <ClCompile Include="transformer.c" />
-    <ClInclude Include="transformer.h" />
+    <ClInclude Include="..\Inc\transformer.h" />
     <None Include="stm32.props" />
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\StartupFiles\startup_stm32f103xb.c" />
     <ClInclude Include="..\Inc\gpio.h" />
