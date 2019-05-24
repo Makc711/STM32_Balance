@@ -139,7 +139,6 @@ int main(void)
 	measurements.TemperatureAnode = 15;
 	measurements.TemperatureCathode = -23;
 	measurements.TemperatureVT1 = 115;
-	measurements.MA_Event_Register = 0b0000000000000001;
 	while (true)
 	{
 		updateMeasurements();

@@ -13,6 +13,8 @@ uint8_t settingsChecksum = 0;
 uint8_t actionsRegister = 0;
 
 uint8_t calculateSettingsChecksum();
+void updateADCMeasurements();
+void updateGPIOMeasurements();
 
 bool writeDataToSettingsArray(uint8_t *data, const uint8_t size, const uint8_t address)
 {
@@ -74,10 +76,27 @@ uint8_t calculateSettingsChecksum()
 
 void updateMeasurements()
 {
+	updateADCMeasurements();
+	updateGPIOMeasurements();
+}
+
+void updateADCMeasurements()
+{
 	uint16_t data0, data7;
 	if (getADCData(&data0, &data7))
 	{
 		measurements.I_balance = (data0 - ADC_I_ZERO_BIT) * ADC_I_K;
 		measurements.U_cell = data7 * ADC_U_ACC_K;
+	}
+}
+
+void updateGPIOMeasurements()
+{
+	if (HAL_GPIO_ReadPin(BuffEn_GPIO_Port, BuffEn_Pin) == GPIO_PIN_SET)
+	{
+		measurements.MA_Event_Register &= ~MA_Event_BufferEnable_Msk;
+	} else
+	{
+		measurements.MA_Event_Register |= MA_Event_BufferEnable_Msk;
 	}
 }
